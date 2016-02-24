@@ -1,43 +1,38 @@
 /* global CGRectMake, CGRectZero */
-var moduleExports = {};
+"use strict";
+let moduleExports = {};
 
-["./primitives"].forEach(function(moduleName){
-    var module = require(moduleName);
-    for(var key in module){
-        global[key] = module[key];
-        moduleExports[key] = module[key];
+["./primitives"].forEach(moduleName => {
+    let module = require(moduleName);
+    for(let key in module){
+        Object.assign(global, module);
+        Object.assign(moduleExports, module);
     }
 });
 
-function UIScreen(){
-    var self = this;
+let mainScreen = null;
+class UIScreen {
+    constructor(){
+        let self = this;
 
-    self.bounds = CGRectZero;
+        self.bounds = CGRectZero;
+    }
+    static init(){
+        return new UIScreen();
+    }
+    static _initWithTerminal(terminal){
+        let screen = UIScreen.init();
+        screen.bounds = CGRectMake(0, 0, terminal.width, terminal.height);
+        mainScreen = screen;
+        return screen;
+    }
+    static mainScreen(){
+        return mainScreen;
+    }
+    description(){
+        return "UIScreen";
+    }
 }
-
-UIScreen.prototype = Object.create(Object.prototype);
-UIScreen.prototype.constructor = UIScreen;
-
-UIScreen.init = function(){
-    return new this();
-};
-
-var mainScreen = UIScreen.init();
-
-UIScreen._initWithTerminal = function(terminal){
-    var screen = UIScreen.init();
-    screen.bounds = CGRectMake(0, 0, terminal.width, terminal.height);
-    mainScreen = screen;
-    return screen;
-};
-
-UIScreen.mainScreen = function(){
-    return mainScreen;
-};
-
-UIScreen.prototype.description = function(){
-    return "UIScreen";
-};
 
 moduleExports.UIScreen = UIScreen;
 module.exports = moduleExports;

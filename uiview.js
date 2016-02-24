@@ -1,156 +1,147 @@
 /* global _Constant, CGSizeMake, CGPointMake, CGRectMake, CGRectZero, UIColor */
+"use strict";
 const moment = require("moment");
-var moduleExports = {};
+let moduleExports = {};
 
-["./primitives", "./colors"].forEach(function(moduleName){
-    var module = require(moduleName);
-    for(var key in module){
-        global[key] = module[key];
-        moduleExports[key] = module[key];
+["./primitives", "./colors"].forEach(moduleName => {
+    let module = require(moduleName);
+    for(let key in module){
+        Object.assign(global, module);
+        Object.assign(moduleExports, module);
     }
 });
 
-function UIView(){
-    var self = this;
+class UIView {
+    constructor(){
+        let self = this;
 
-    self._term = null;
-    self._didLayout = true;
+        self._term = null;
+        self._didLayout = true;
 
-    self.foregroundColor = UIColor.whiteColor();
-    self.backgroundColor = UIColor.clearColor();
-    self.superview = null;
-    self.subviews = [];
-    self._frame = null;
-}
+        self.foregroundColor = UIColor.whiteColor();
+        self.backgroundColor = UIColor.clearColor();
+        self.superview = null;
+        self.subviews = [];
+        self._frame = null;
+    }
+    static init(){
+        return new this();
+    }
 
-UIView.prototype = Object.create(Object.prototype);
-UIView.prototype.constructor = UIView;
+    static initWithFrame(frame){
+        let view = UIView.init();
+        view.frame = frame;
+        return view;
+    }
 
-UIView.init = function(){
-    return new this();
-}
+    static animateWithDurationAnimations(duration, animations){
+        let self = this;
 
-UIView.initWithFrame = function(frame){
-    var view = UIView.init();
-    view.frame = frame;
-    return view;
-}
+        self.animateWithDurationAnimationsCompletion(
+            duration, animations, function(){}
+        );
+    }
 
-UIView.prototype.addSubview = function(view){
-    var self = this;
+    static animateWithDurationAnimationsCompletion(
+        duration, animations, completion
+    ){
+        let endTime = moment() + duration * 1000;
+        function animate(){
+            let percentage = 1 - ((endTime - moment()) / (duration * 1000));
+            if(percentage > 1){
+                animations(1);
+                return completion();
+            }
 
-    view.superview = self;
-    self.subviews.push(view);
-};
+            animations(percentage);
 
-UIView.prototype.description = function(){
-    return "UIView";
-};
-
-UIView.prototype.layoutSubviews = function(){
-    var self = this;
-
-    if(self.frame === null){
-        if(self.superview === null && self._term !== null){
-            // If superview is null, this must be a root view
-            //   then initialize the frame as terminal size
-            self.frame = CGRectMake(
-                0, 0, self._term.width, self._term.height
-            );
-        }else{
-            self.frame = CGRectZero;
+            setTimeout(animate, _Constant.secondPerFrame());
         }
+        animate();
     }
-
-    self.subviews.forEach(function(view) {
-        view.layoutSubviews();
-    }, this);
-    self._didLayout = true;
-};
-
-UIView.prototype.layoutIfNeeded = function(){
-    var self = this;
-
-    if(self._didLayout){
-        self.subviews.forEach(function(view) {
-            view.layoutIfNeeded();
-        }, this);
-        return;
+    description(){
+        return "UIView";
     }
-    self.layoutSubviews();
-};
+    addSubview(view){
+        let self = this;
 
-Object.defineProperty(UIView.prototype, "frame", {
-    get: function(){
-        return this._frame;
-    },
-    set: function(value){
-        var self = this;
-        self.setFrame(value);
+        view.superview = self;
+        self.subviews.push(view);
     }
-});
+    layoutSubviews(){
+        let self = this;
 
-UIView.prototype.setFrame = function(frame){
-    var self = this;
-
-    self._frame = frame;
-    self._didLayout = false;
-};
-
-UIView.prototype.render = function(terminal){
-    var self = this;
-    self._term = terminal;
-
-    self.layoutIfNeeded();
-
-    var lastX = self.frame.origin.x + self.frame.size.width;
-    var lastY = self.frame.origin.y + self.frame.size.height;
-
-    if(!self.backgroundColor.clear){
-        // Should change to screen buffer
-        for(var row = self.frame.origin.y; row < lastY; row++){
-            for(var col = self.frame.origin.x; col < lastX; col++){
-                    self._term.moveTo(col + 1, row + 1);
-                    self._term.bgColorRgb(
-                        self.backgroundColor.red,
-                        self.backgroundColor.green,
-                        self.backgroundColor.blue
-                    )
-                self._term(" ");
+        if(self.frame === null){
+            if(self.superview === null && self._term !== null){
+                // If superview is null, this must be a root view
+                //   then initialize the frame as terminal size
+                self.frame = CGRectMake(
+                    0, 0, self._term.width, self._term.height
+                );
+            }else{
+                self.frame = CGRectZero;
             }
         }
-    }
 
-    self.subviews.forEach(function(view){
-        view.render(terminal);
-    });
-};
-
-UIView.animateWithDurationAnimations = function(duration, animations){
-    var self = this;
-
-    self.animateWithDurationAnimationsCompletion(
-        duration, animations, function(){}
-    );
-};
-
-UIView.animateWithDurationAnimationsCompletion = function(
-    duration, animations, completion
-){
-    var endTime = moment() + duration * 1000;
-    function animate(){
-        var percentage = 1 - ((endTime - moment()) / (duration * 1000));
-        if(percentage > 1){
-            animations(1);
-            return completion();
+        for(let view of self.subviews){
+            view.layoutSubviews();
         }
 
-        animations(percentage);
-
-        setTimeout(animate, _Constant.secondPerFrame());
+        self._didLayout = true;
     }
-    animate();
-};
+    layoutIfNeeded(){
+        let self = this;
+
+        if(self._didLayout){
+            for(let view of self.subviews){
+                view.layoutIfNeeded();
+            }
+            return;
+        }
+        self.layoutSubviews();
+    }
+    get frame(){
+        return this._frame;
+    }
+    set frame(value){
+        let self = this;
+        self.setFrame(value);
+    }
+    setFrame(frame){
+        let self = this;
+
+        self._frame = frame;
+        self._didLayout = false;
+    }
+    render(terminal){
+        let self = this;
+        self._term = terminal;
+
+        self.layoutIfNeeded();
+
+        let lastX = self.frame.origin.x + self.frame.size.width;
+        let lastY = self.frame.origin.y + self.frame.size.height;
+
+        if(!self.backgroundColor.clear){
+            // Should change to screen buffer
+            for(let row = self.frame.origin.y; row < lastY; row++){
+                for(let col = self.frame.origin.x; col < lastX; col++){
+                        self._term.moveTo(col + 1, row + 1);
+                        self._term.bgColorRgb(
+                            self.backgroundColor.red,
+                            self.backgroundColor.green,
+                            self.backgroundColor.blue
+                        )
+                    self._term(" ");
+                }
+            }
+        }
+
+        for(let view of self.subviews){
+            view.render(terminal);
+        }
+    }
+}
 
 moduleExports.UIView = UIView;
 module.exports = moduleExports;

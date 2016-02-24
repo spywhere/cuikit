@@ -1,16 +1,15 @@
-var moduleExports = {};
+"use strict";
+let moduleExports = {};
 
 function CGPointMake(x, y){
     return {
-        x: x,
-        y: y
+        x, y
     };
 }
 
 function CGSizeMake(width, height){
     return {
-        width: width,
-        height: height
+        width, height
     };
 }
 
@@ -21,19 +20,18 @@ function CGRectMake(x, y, width, height){
     };
 }
 
-function _Constant(){
-    var self = this;
+class _Constant {
+    constructor(){
+        let self = this;
 
-    self.fps = 15;
+        self.fps = 15;
+    }
+    static secondPerFrame(){
+        let self = this;
+
+        return 1 / self.fps;
+    }
 }
-
-_Constant.prototype = Object.create(Object.prototype);
-_Constant.prototype.constructor = _Constant;
-
-_Constant.secondPerFrame = function(){
-    var self = this;
-    return 1 / self.fps;
-};
 
 moduleExports._Constant = _Constant;
 moduleExports.CGPointMake = CGPointMake;

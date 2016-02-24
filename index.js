@@ -1,14 +1,14 @@
 /* global AppDelegate */
+"use strict";
+
 const cuikit = require("./cuikit");
-for(var key in cuikit){
-    global[key] = cuikit[key];
-}
+Object.assign(global, cuikit);
 
 AppDelegate.initWithDelegate({
-    applicationDidFinishLaunchingWithOptions: function(app, options){
+    applicationDidFinishLaunchingWithOptions: (app, options)=>{
         console.log("App did launch");
     },
-    applicationWillTerminate: function(app){
+    applicationWillTerminate: app => {
         console.log("App will terminate");
     }
 });
