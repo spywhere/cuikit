@@ -16,7 +16,7 @@ function UIView(){
     self._term = null;
     self._didLayout = true;
 
-    self.foregroundColor = UIColor.blackColor();
+    self.foregroundColor = UIColor.whiteColor();
     self.backgroundColor = UIColor.clearColor();
     self.superview = null;
     self.subviews = [];

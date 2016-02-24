@@ -1,10 +1,13 @@
-/* global _Constant */
+/* global _Constant, UIScreen, UIWindow */
 const termkit = require("terminal-kit")
 const ScreenBuffer = termkit.ScreenBuffer;
 
 var moduleExports = {};
 
-["./primitives", "./colors", "./uiview", "./uilabel"].forEach(function(moduleName){
+[
+    "./primitives", "./colors", "./uiview", "./uilabel", "./uiscreen",
+    "./uiwindow"
+].forEach(function(moduleName){
     var module = require(moduleName);
     for(var key in module){
         global[key] = module[key];
@@ -17,8 +20,12 @@ function AppDelegate(){
 
     self._launch = false;
     self._term = termkit.terminal;
+    UIScreen._initWithTerminal(self._term);
     self._renderPause = false;
+
     self.delegate = null;
+    self.window = UIWindow.init();
+    self.window.frame = self.window.screen.bounds;
 }
 
 AppDelegate.prototype = Object.create(Object.prototype);
