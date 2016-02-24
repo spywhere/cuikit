@@ -5,7 +5,6 @@
   "main": "cuikit.js",
   "dependencies": {},
   "devDependencies": {
-    "inherits": "^2.0.1",
     "moment": "^2.11.2",
     "terminal-kit": "^0.24.0"
   },
