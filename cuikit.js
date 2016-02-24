@@ -1,4 +1,4 @@
-/* global _Constant, UIScreen, UIWindow */
+/* global _Constant */
 "use strict";
 
 let moduleExports = {};

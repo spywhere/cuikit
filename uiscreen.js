@@ -1,4 +1,3 @@
-/* global CGRectMake, CGRectZero, NSObject */
 "use strict";
 let moduleExports = {};
 

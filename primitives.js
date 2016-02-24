@@ -1,23 +1,46 @@
 "use strict";
 let moduleExports = {};
 
+class CGPoint {
+    constructor(x, y){
+        let self = this;
+
+        self.x = x;
+        self.y = y;
+    }
+}
+
 function CGPointMake(x, y){
-    return {
-        x, y
-    };
+    return new CGPoint(x, y);
+}
+
+class CGSize {
+    constructor(width, height){
+        let self = this;
+
+        self.width = width;
+        self.height = height;
+    }
 }
 
 function CGSizeMake(width, height){
-    return {
-        width, height
-    };
+    return new CGSize(width, height);
+}
+
+class CGRect {
+    constructor(origin, size){
+        let self = this;
+
+        self.origin = origin;
+        self.size = size;
+    }
 }
 
 function CGRectMake(x, y, width, height){
-    return {
-        origin: CGPointMake(x, y),
-        size: CGSizeMake(width, height)
-    };
+    return new CGRect(
+        CGPointMake(x, y),
+        CGSizeMake(width, height)
+    );
 }
 
 class _Constant {

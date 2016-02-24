@@ -15,7 +15,9 @@ class NSObject {
     performSelector(selector){
         let self = this;
 
-        self[selector].apply(self, Array.prototype.slice.call(arguments, 1));
+        return self[selector].apply(
+            self, Array.prototype.slice.call(arguments, 1)
+        );
     }
 }
 

@@ -1,4 +1,3 @@
-/* global CGRectMake, NSObject, UIApplication, UIColor, UIView */
 "use strict";
 
 const cuikit = require("./cuikit");

@@ -1,4 +1,3 @@
-/* global UIView */
 "use strict";
 let moduleExports = {};
 

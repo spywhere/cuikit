@@ -1,4 +1,4 @@
-/* global _Constant, CGSizeMake, CGPointMake, CGRectMake, CGRectZero, NSObject, UIColor, UIScreen */
+/* global _Constant */
 "use strict";
 const moment = require("moment");
 let moduleExports = {};
@@ -25,7 +25,7 @@ class UIView extends NSObject {
         self._frame = null;
     }
     static init(){
-        return new this();
+        return new UIView();
     }
 
     static initWithFrame(frame){

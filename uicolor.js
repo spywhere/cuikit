@@ -1,4 +1,3 @@
-/* global NSObject */
 "use strict";
 let moduleExports = {};
 
