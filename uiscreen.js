@@ -1,8 +1,8 @@
-/* global CGRectMake, CGRectZero */
+/* global CGRectMake, CGRectZero, NSObject */
 "use strict";
 let moduleExports = {};
 
-["./primitives"].forEach(moduleName => {
+["./primitives", "./nsobject"].forEach(moduleName => {
     let module = require(moduleName);
     for(let key in module){
         Object.assign(global, module);
@@ -11,8 +11,9 @@ let moduleExports = {};
 });
 
 let mainScreen = null;
-class UIScreen {
+class UIScreen extends NSObject {
     constructor(){
+        super();
         let self = this;
 
         self.bounds = CGRectZero;

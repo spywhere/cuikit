@@ -1,10 +1,10 @@
-/* global _Constant, UIScreen, UIWindow */
+/* global _Constant, CGRectMake, NSObject, UIScreen, UIWindow */
 "use strict";
 let moduleExports = {};
 
 const termkit = require("terminal-kit")
 const ScreenBuffer = termkit.ScreenBuffer;
-["./primitives", "./uiscreen", "./uiwindow"].forEach(moduleName => {
+["./primitives", "./nsobject", "./uiscreen", "./uiwindow"].forEach(moduleName => {
     let module = require(moduleName);
     for(let key in module){
         Object.assign(global, module);
@@ -12,8 +12,10 @@ const ScreenBuffer = termkit.ScreenBuffer;
     }
 });
 
-class UIApplication {
+let sharedApplication = null;
+class UIApplication extends NSObject {
     constructor(){
+        super();
         let self = this;
 
         self._launch = false;
@@ -26,12 +28,16 @@ class UIApplication {
         self.window.frame = self.window.screen.bounds;
     }
     static init(){
-        return new UIApplication();
+        sharedApplication = new UIApplication();
+        return sharedApplication;
     }
     static initWithDelegate(delegate){
         let app = UIApplication.init();
         app.delegate = delegate;
         return app.launch();
+    }
+    static sharedApplication(){
+        return sharedApplication;
     }
     setDelegate(delegate){
         let self = this;
@@ -46,7 +52,7 @@ class UIApplication {
             return;
         }
 
-        // console.log("Render: " + self._renderPause);
+        self.window._render(self._term);
 
         setTimeout(() => {
             self._render();
@@ -63,15 +69,18 @@ class UIApplication {
         self._term.grabInput(true);
         self._term.hideCursor(true);
 
-        self._term.on("resize", (width, height)=>{
-
+        self._term.on("resize", (width, height) => {
+            UIScreen._initWithTerminal(self._term);
+            self.window.frame = CGRectMake(0, 0, width, height);
         });
 
-        self._term.on("key", (name, matches, data)=>{
+        self._term.on("key", (name, matches, data) => {
             if(name === "CTRL_C"){
                 if(
                     self.delegate !== null &&
-                    typeof(self.delegate.applicationWillTerminate) === "function"
+                    self.delegate.respondsToSelector(
+                        "applicationWillTerminate"
+                    )
                 ){
                     self.delegate.applicationWillTerminate(self);
                 }
@@ -84,13 +93,15 @@ class UIApplication {
             }
         });
 
-        self._term.on("terminal", (name, data)=>{
+        self._term.on("terminal", (name, data) => {
             if(name === "FOCUS_IN"){
                 self._renderPause = false;
                 self._render();
                 if(
                     self.delegate !== null &&
-                    typeof(self.delegate.applicationDidBecomeActive) === "function"
+                    self.delegate.respondsToSelector(
+                        "applicationDidBecomeActive"
+                    )
                 ){
                     self.delegate.applicationDidBecomeActive(self);
                 }
@@ -98,7 +109,9 @@ class UIApplication {
                 self._renderPause = true;
                 if(
                     self.delegate !== null &&
-                    typeof(self.delegate.applicationWillResignActive) === "function"
+                    self.delegate.respondsToSelector(
+                        "applicationWillResignActive"
+                    )
                 ){
                     self.delegate.applicationWillResignActive(self);
                 }
@@ -107,9 +120,9 @@ class UIApplication {
 
         if(
             self.delegate !== null &&
-            typeof(
-                self.delegate.applicationDidFinishLaunchingWithOptions
-            ) === "function"
+            self.delegate.respondsToSelector(
+                "applicationDidFinishLaunchingWithOptions"
+            )
         ){
             self.delegate.applicationDidFinishLaunchingWithOptions(
                 self, process.argv

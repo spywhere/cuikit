@@ -4,6 +4,7 @@
 let moduleExports = {};
 
 [
+    "./nsobject",
     "./primitives",
     "./uiapplication",
     "./uicolor",

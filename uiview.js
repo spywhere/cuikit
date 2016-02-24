@@ -1,9 +1,9 @@
-/* global _Constant, CGSizeMake, CGPointMake, CGRectMake, CGRectZero, UIColor */
+/* global _Constant, CGSizeMake, CGPointMake, CGRectMake, CGRectZero, NSObject, UIColor, UIScreen */
 "use strict";
 const moment = require("moment");
 let moduleExports = {};
 
-["./primitives", "./uicolor"].forEach(moduleName => {
+["./primitives", "./nsobject", "./uicolor", "./uiscreen"].forEach(moduleName => {
     let module = require(moduleName);
     for(let key in module){
         Object.assign(global, module);
@@ -11,11 +11,11 @@ let moduleExports = {};
     }
 });
 
-class UIView {
+class UIView extends NSObject {
     constructor(){
+        super();
         let self = this;
 
-        self._term = null;
         self._didLayout = true;
 
         self.foregroundColor = UIColor.whiteColor();
@@ -45,9 +45,9 @@ class UIView {
     static animateWithDurationAnimationsCompletion(
         duration, animations, completion
     ){
-        let endTime = moment() + duration * 1000;
+        let endTime = moment().add(duration, "seconds");
         function animate(){
-            let percentage = 1 - ((endTime - moment()) / (duration * 1000));
+            let percentage = 1 - ((endTime.diff(moment())) / (duration * 1000));
             if(percentage > 1){
                 animations(1);
                 return completion();
@@ -72,16 +72,16 @@ class UIView {
         let self = this;
 
         if(self.frame === null){
-            if(self.superview === null && self._term !== null){
+            if(self.superview === null){
                 // If superview is null, this must be a root view
                 //   then initialize the frame as terminal size
-                self.frame = CGRectMake(
-                    0, 0, self._term.width, self._term.height
-                );
+                self.frame = UIScreen.mainScreen().bounds;
             }else{
                 self.frame = CGRectZero;
             }
         }
+
+
 
         for(let view of self.subviews){
             view.layoutSubviews();
@@ -113,9 +113,8 @@ class UIView {
         self._frame = frame;
         self._didLayout = false;
     }
-    render(terminal){
+    _render(terminal){
         let self = this;
-        self._term = terminal;
 
         self.layoutIfNeeded();
 
@@ -126,19 +125,19 @@ class UIView {
             // Should change to screen buffer
             for(let row = self.frame.origin.y; row < lastY; row++){
                 for(let col = self.frame.origin.x; col < lastX; col++){
-                        self._term.moveTo(col + 1, row + 1);
-                        self._term.bgColorRgb(
+                        terminal.moveTo(col + 1, row + 1);
+                        terminal.bgColorRgb(
                             self.backgroundColor.red,
                             self.backgroundColor.green,
                             self.backgroundColor.blue
                         )
-                    self._term(" ");
+                    terminal(" ");
                 }
             }
         }
 
         for(let view of self.subviews){
-            view.render(terminal);
+            view._render(terminal);
         }
     }
 }

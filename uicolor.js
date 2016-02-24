@@ -1,8 +1,18 @@
+/* global NSObject */
 "use strict";
 let moduleExports = {};
 
-class UIColor {
+["./nsobject"].forEach(moduleName => {
+    let module = require(moduleName);
+    for(let key in module){
+        Object.assign(global, module);
+        Object.assign(moduleExports, module);
+    }
+});
+
+class UIColor extends NSObject {
     constructor(){
+        super();
         let self = this;
 
         self.red = 0;
