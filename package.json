@@ -1,0 +1,17 @@
+{
+  "name": "cuikit",
+  "version": "1.0.0",
+  "description": "A CLI-based UI kit inspired by Apple UIKit",
+  "main": "cuikit.js",
+  "dependencies": {},
+  "devDependencies": {
+    "inherits": "^2.0.1",
+    "moment": "^2.11.2",
+    "terminal-kit": "^0.24.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "spywhere",
+  "license": "MIT"
+}
