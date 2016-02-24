@@ -3,7 +3,7 @@
 const moment = require("moment");
 let moduleExports = {};
 
-["./primitives", "./colors"].forEach(moduleName => {
+["./primitives", "./uicolor"].forEach(moduleName => {
     let module = require(moduleName);
     for(let key in module){
         Object.assign(global, module);
