@@ -30,7 +30,6 @@ class UIApplication extends NSObject {
         let self = this;
 
         self.window.screen = UIScreen.mainScreen();
-        self.window.backgroundColor = UIColor.whiteColor();
         self.window.frame = self.window.screen.bounds;
     }
     static init(){
