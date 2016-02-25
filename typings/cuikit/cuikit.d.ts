@@ -1,3 +1,8 @@
+// Type definitions for CUIKit v0.0.1
+// Project: https://github.com/spywhere/cuikit
+// Definitions by: Sirisak Lueangsaksri <https://github.com/spywhere/>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+
 declare class CGPoint {
     x: number;
     y: number;
@@ -88,7 +93,7 @@ declare class UIView extends NSObject {
     frame: CGRect;
 
     static init(): UIView;
-    static initWithFrame(frame: Object): UIView;
+    static initWithFrame(frame: CGRect): UIView;
     static animateWithDurationAnimations(
         duration: number,
         animations: (percentage: number) => void
@@ -102,7 +107,7 @@ declare class UIView extends NSObject {
     addSubview(view: UIView): void;
     layoutSubviews(): void;
     layoutIfNeeded(): void;
-    setFrame(frame):void;
+    setFrame(frame: CGRect):void;
 }
 
 declare class UIWindow extends UIView {
