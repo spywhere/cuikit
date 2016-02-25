@@ -8,7 +8,7 @@ A CLI-based ui kit inspired by Apple UIKit
 "use strict";
 
 // Import the framework
-const cuikit = require("./cuikit");
+const cuikit = require("cuikit");
 // Assign the classes to global scope
 //   so we don't have to use `cuikit.NSObject` and so on...
 Object.assign(global, cuikit);

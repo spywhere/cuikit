@@ -3,14 +3,13 @@
   "version": "0.0.1",
   "description": "A CLI-based UI kit inspired by Apple UIKit",
   "main": "cuikit.js",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "moment": "^2.11.2",
     "terminal-kit": "^0.24.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "spywhere",
+  "author": "Sirisak Lueangsaksri <spywhere@me.com>",
   "license": "MIT"
 }
