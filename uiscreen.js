@@ -22,7 +22,7 @@ class UIScreen extends NSObject {
     }
     static _initWithTerminal(terminal){
         let screen = UIScreen.init();
-        screen.bounds = CGRectMake(0, 0, terminal.width, terminal.height);
+        screen.bounds = CGRectMake(0, 0, terminal.width + 1, terminal.height + 1);
         mainScreen = screen;
         return screen;
     }

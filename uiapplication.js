@@ -2,8 +2,7 @@
 "use strict";
 let moduleExports = {};
 
-const termkit = require("terminal-kit")
-const ScreenBuffer = termkit.ScreenBuffer;
+const termkit = require("terminal-kit");
 ["./primitives", "./nsobject", "./uiscreen", "./uiwindow"].forEach(moduleName => {
     let module = require(moduleName);
     for(let key in module){
@@ -25,6 +24,13 @@ class UIApplication extends NSObject {
 
         self.delegate = null;
         self.window = UIWindow.init();
+        self._resetWindow();
+    }
+    _resetWindow(){
+        let self = this;
+
+        self.window.screen = UIScreen.mainScreen();
+        self.window.backgroundColor = UIColor.whiteColor();
         self.window.frame = self.window.screen.bounds;
     }
     static init(){
@@ -71,7 +77,7 @@ class UIApplication extends NSObject {
 
         self._term.on("resize", (width, height) => {
             UIScreen._initWithTerminal(self._term);
-            self.window.frame = CGRectMake(0, 0, width, height);
+            self._resetWindow();
         });
 
         self._term.on("key", (name, matches, data) => {

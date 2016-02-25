@@ -1,5 +1,7 @@
 /* global _Constant */
 "use strict";
+
+const ScreenBuffer = require("terminal-kit").ScreenBuffer;
 const moment = require("moment");
 let moduleExports = {};
 
@@ -17,12 +19,13 @@ class UIView extends NSObject {
         let self = this;
 
         self._didLayout = true;
+        self._frame = null;
+        self._viewport = null;
 
         self.foregroundColor = UIColor.whiteColor();
         self.backgroundColor = UIColor.clearColor();
         self.superview = null;
         self.subviews = [];
-        self._frame = null;
     }
     static init(){
         return new UIView();
@@ -81,7 +84,12 @@ class UIView extends NSObject {
             }
         }
 
+        self._viewport = ScreenBuffer.create({
+            width: self.frame.size.width,
+            height: self.frame.size.height
+        });
 
+        self._paint();
 
         for(let view of self.subviews){
             view.layoutSubviews();
@@ -113,27 +121,39 @@ class UIView extends NSObject {
         self._frame = frame;
         self._didLayout = false;
     }
+    _paint(){
+        let self = this;
+
+        for(let row = 0; row < self.frame.size.height; row++){
+            for(let col = 0; col < self.frame.size.width; col++){
+                self._viewport.put({
+                    x: col,
+                    y: row,
+                    attr: {
+                       bgColor: self.backgroundColor._to16Color()
+                    }
+                }, " ");
+            }
+        }
+    }
     _render(terminal){
         let self = this;
 
         self.layoutIfNeeded();
 
-        let lastX = self.frame.origin.x + self.frame.size.width;
-        let lastY = self.frame.origin.y + self.frame.size.height;
-
-        if(!self.backgroundColor.clear){
-            // Should change to screen buffer
-            for(let row = self.frame.origin.y; row < lastY; row++){
-                for(let col = self.frame.origin.x; col < lastX; col++){
-                        terminal.moveTo(col + 1, row + 1);
-                        terminal.bgColorRgb(
-                            self.backgroundColor.red,
-                            self.backgroundColor.green,
-                            self.backgroundColor.blue
-                        )
-                    terminal(" ");
-                }
-            }
+        self._viewport.x = self.frame.origin.x;
+        self._viewport.y = self.frame.origin.y;
+        if(self.superview === null){
+            self._viewport.draw({
+                dst: terminal,
+                delta: true
+            });
+            self._paint();
+        }else{
+            self._viewport.draw({
+                dst: self.superview._viewport,
+                delta: true
+            });
         }
 
         for(let view of self.subviews){

@@ -1,7 +1,9 @@
 "use strict";
 let moduleExports = {};
 
-["./nsobject"].forEach(moduleName => {
+const term = require("terminal-kit").terminal;
+
+["./nsobject", "./uiscreen"].forEach(moduleName => {
     let module = require(moduleName);
     for(let key in module){
         Object.assign(global, module);
@@ -32,6 +34,11 @@ class UIColor extends NSObject {
         color.blue = 255 * blue;
         color.clear = false;
         return color;
+    }
+    _to16Color(){
+        let self = this;
+
+        return term.registerForRgb(self.red, self.green, self.blue, 0, 15);
     }
     static blackColor(){
         return UIColor.initWithRedGreenBlue(0, 0, 0);

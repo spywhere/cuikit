@@ -14,7 +14,6 @@ let moduleExports = {};
     "./uiwindow"
 ].forEach(moduleName => {
     let module = require(moduleName);
-    Object.assign(global, module);
     Object.assign(moduleExports, module);
 });
 
