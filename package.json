@@ -11,5 +11,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sirisak Lueangsaksri <spywhere@me.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "tonicExampleFilename": "examples/tonicExample.js"
 }
