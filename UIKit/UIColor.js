@@ -3,7 +3,7 @@ let moduleExports = {};
 
 const term = require("terminal-kit").terminal;
 
-["./NSObject", "./UIScreen"].forEach(moduleName => {
+["../Foundation/Foundation", "./UIScreen"].forEach(moduleName => {
     let module = require(moduleName);
     Object.assign(global, module);
     Object.assign(moduleExports, module);

@@ -4,7 +4,10 @@ let moduleExports = {};
 
 const termkit = require("terminal-kit");
 [
-    "./Primitives", "./NSObject", "./UIScreen", "./UIWindow"
+    "../NSUtils/Constant",
+    "../Foundation/Foundation",
+    "./UIScreen",
+    "./UIWindow"
 ].forEach(moduleName => {
     let module = require(moduleName);
     Object.assign(global, module);

@@ -1,6 +1,9 @@
 ## CUIKit
 A CLI-based ui kit inspired by Apple UIKit
 
+Development Status: Alpha  
+Development Roadmap: Check out `dev/DevNote.md`
+
 ### A Quick Look
 ```javascript
 // Enable ES6 features

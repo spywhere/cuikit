@@ -3,9 +3,9 @@
 let moduleExports = {};
 
 [
-    "./CGGeometry/CGGeometry",
-    "./Foundation/Foundation",
-    "./UIKit/UIKit",
+    "./CGPoint",
+    "./CGRect",
+    "./CGSize"
 ].forEach(moduleName => {
     let module = require(moduleName);
     Object.assign(moduleExports, module);

@@ -5,7 +5,13 @@ const ScreenBuffer = require("terminal-kit").ScreenBuffer;
 const moment = require("moment");
 let moduleExports = {};
 
-["./Primitives", "./NSObject", "./UIColor", "./UIScreen"].forEach(moduleName => {
+[
+    "../NSUtils/Constant",
+    "../CGGeometry/CGGeometry",
+    "../Foundation/Foundation",
+    "./UIColor",
+    "./UIScreen"
+].forEach(moduleName => {
     let module = require(moduleName);
     Object.assign(global, module);
     Object.assign(moduleExports, module);
