@@ -5,12 +5,17 @@
   "main": "cuikit.js",
   "dependencies": {
     "moment": "^2.11.2",
+    "object-hash": "^1.1.2",
     "terminal-kit": "^0.24.0"
+  },
+  "engines": {
+    "node": ">=5.4.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sirisak Lueangsaksri <spywhere@me.com>",
   "license": "MIT",
+  "repository": "spywhere/cuikit",
   "tonicExampleFilename": "examples/tonicExample.js"
 }
