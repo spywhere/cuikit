@@ -1,6 +1,10 @@
 ## CUIKit
 A CLI-based ui kit inspired by Apple UIKit
 
+[![npm](https://img.shields.io/npm/v/cuikit.svg?style=flat-square)](https://www.npmjs.com/package/cuikit)
+[![npm](https://img.shields.io/npm/dt/cuikit.svg?style=flat-square)](https://www.npmjs.com/package/cuikit)
+[![npm](https://img.shields.io/npm/l/cuikit.svg?style=flat-square)](https://www.npmjs.com/package/cuikit)
+
 Development Status: Alpha  
 Development Roadmap: Check out `dev/DevNote.md`
 
