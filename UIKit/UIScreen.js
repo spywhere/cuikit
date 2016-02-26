@@ -1,7 +1,7 @@
 "use strict";
 let moduleExports = {};
 
-["../CGGeometry/CGGeometry", "../Foundation/Foundation"].forEach(moduleName => {
+["../CoreGraphics/CoreGraphics", "../Foundation/Foundation"].forEach(moduleName => {
     let module = require(moduleName);
     Object.assign(global, module);
     Object.assign(moduleExports, module);

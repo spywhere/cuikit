@@ -6,8 +6,8 @@ const moment = require("moment");
 let moduleExports = {};
 
 [
-    "../NSUtils/Constant",
-    "../CGGeometry/CGGeometry",
+    "../utils/Constant",
+    "../CoreGraphics/CoreGraphics",
     "../Foundation/Foundation",
     "./UIColor",
     "./UIScreen"

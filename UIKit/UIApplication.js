@@ -4,7 +4,7 @@ let moduleExports = {};
 
 const termkit = require("terminal-kit");
 [
-    "../NSUtils/Constant",
+    "../utils/Constant",
     "../Foundation/Foundation",
     "./UIScreen",
     "./UIWindow"
