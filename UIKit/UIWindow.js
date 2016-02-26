@@ -13,12 +13,20 @@ class UIWindow extends UIView {
         let self = this;
 
         self.screen = UIScreen.mainScreen();
+        self._rootViewController = null;
     }
     static init(){
         return new UIWindow();
     }
     description(){
         return "UIWindow";
+    }
+    set rootViewController(value){
+        self._removeSubviews();
+        self._rootViewController = value;
+    }
+    get rootViewController(){
+        return self._rootViewController;
     }
 }
 
