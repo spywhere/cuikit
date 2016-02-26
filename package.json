@@ -1,6 +1,6 @@
 {
   "name": "cuikit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A CLI-based UI kit inspired by Apple UIKit",
   "main": "cuikit.js",
   "dependencies": {
