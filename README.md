@@ -24,7 +24,6 @@ Object.assign(global, cuikit);
 //   to control the views
 class MainViewController extends UIViewController {
     // When the view is loaded
-    //   AKA. when the view is added to the superview
     viewDidLoad(){
         // Let do what it should do first
         super.viewDidLoad();
