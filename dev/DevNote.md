@@ -31,11 +31,15 @@ iOS Frameworks: [Clicky](https://developer.apple.com/library/ios/documentation/M
    - `NSValue`? / `NSNumber`?
 - Application Kit (AppKit)
    - `NSLayoutConstraint`
+- Text Kit
+   - `NSTextStorage` (Store text and attributes)
+   - `NSLayoutManager` (Takes the text and lay them down on container)
+   - `NSTextContainer` (Describe a shape, supplies as line fragments to layout manager)
 - UI Kit (UIKit)
    - `UIBarItem`
       - `UIBarButtonItem`
       - `UITabBarItem`
-   - [WIP] `UIColor`
+   - [Done] `UIColor`
    - `UIGestureRecognizer`
       - `UIPressRecognizer`? (Keyboard event)
    - `UIKeyCommand`?
@@ -60,8 +64,8 @@ iOS Frameworks: [Clicky](https://developer.apple.com/library/ios/documentation/M
          - `UITextView`
       - `UITabBar`
       - `UITableViewCell`
-      - [WIP] `UIWindow`
-   - `UIViewController`
+      - [Done?] `UIWindow`
+   - [WIP] `UIViewController`
       - `UIActivityIndicatorController`?
       - `UIAlertController`
    - [Done] `UIScreen`

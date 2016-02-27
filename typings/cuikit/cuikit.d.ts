@@ -3,39 +3,63 @@
 // Definitions by: Sirisak Lueangsaksri <https://github.com/spywhere/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+///////////////////
+// Core Graphics //
+///////////////////
 declare class CGPoint {
     x: number;
     y: number;
 }
 
-declare class CGSize {
-    width: number;
-    height: number;
-}
+declare function CGPointMake(
+    x: number, y: number
+): CGPoint;
+
+declare var CGPointZero: CGPoint;
 
 declare class CGRect {
     origin: CGPoint;
     size: CGSize;
 }
 
-declare function CGPointMake(
-    x: number, y: number
-): CGPoint;
-declare function CGSizeMake(
-    width: number, height: number
-): CGSize;
 declare function CGRectMake(
     x: number, y: number, width: number, height: number
 ): CGRect;
-declare var CGPointZero: CGPoint;
-declare var CGSizeZero: CGSize;
+
 declare var CGRectZero: CGRect;
+
+declare class CGSize {
+    width: number;
+    height: number;
+}
+
+declare function CGSizeMake(
+    width: number, height: number
+): CGSize;
+
+declare var CGSizeZero: CGSize;
+
+////////////////
+// Foundation //
+////////////////
 
 declare class NSObject {
     description(): string;
     respondsToSelector(selector: string): boolean;
     performSelector(selector: string, args: any[]): any;
+    performSelectorWithObject(selector: string, object: any): any;
+    performSelectorWithObjectWithObject(selector: string, object: any, object2: any): any;
+    performSelectorWithObjectAfterDelay(selector: string, object: any, delay: number): any;
+    isMemberOfClass(clazz: typeof Object): boolean;
+    isKindOfClass(clazz: typeof Object): boolean;
+    isSubclassOfClass(clazz: typeof Object): boolean;
+    isEqual(object: any): boolean;
+    hash(): string;
 }
+
+////////////
+// UI Kit //
+////////////
 
 declare class UIApplication extends NSObject {
     delegate: NSObject;
@@ -91,6 +115,9 @@ declare class UIView extends NSObject {
     superview: UIView;
     subviews: UIView[];
     frame: CGRect;
+    bounds: CGRect;
+    center: CGPoint;
+    clipsToBounds: boolean;
 
     static init(): UIView;
     static initWithFrame(frame: CGRect): UIView;
@@ -105,11 +132,35 @@ declare class UIView extends NSObject {
     ): void;
 
     addSubview(view: UIView): void;
+    bringSubviewToFront(view: UIView): void;
+    sendSubviewToBack(view: UIView): void;
+    insertSubviewAtIndex(view: UIView, index: number): void;
+    insertSubviewAboveSubview(view: UIView, siblingView: UIView): void;
+    insertSubviewBelowSubview(view: UIView, siblingView: UIView): void;
+    exchangeSubviewAtIndexWithSubviewAtIndex(viewIndex: number, siblingViewIndex: number): void;
+    removeFromSuperview(): void;
+    isDescendantOfView(): boolean;
     layoutSubviews(): void;
     layoutIfNeeded(): void;
     setFrame(frame: CGRect):void;
 }
 
+declare class UIViewController extends NSObject {
+    view: UIView;
+    viewIfLoaded: UIView;
+    isViewLoaded: boolean;
+
+    static init(): UIViewController;
+    loadView(): void;
+    loadViewIfNeeded(): void;
+    viewDidLoad(): void;
+    viewWillAppear(): void;
+    viewDidAppear(): void;
+    viewWillDisappear(): void;
+    viewDidDisappear(): void;
+}
+
 declare class UIWindow extends UIView {
     screen: UIScreen;
+    rootViewController: UIViewController;
 }

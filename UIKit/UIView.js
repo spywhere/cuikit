@@ -25,14 +25,20 @@ class UIView extends NSObject {
         self._didLayout = true;
         self._frame = null;
         self._viewport = null;
+        self._viewController = null;
 
         self.foregroundColor = UIColor.whiteColor();
         self.backgroundColor = UIColor.clearColor();
         self.superview = null;
         self.subviews = [];
+        self.clipsToBounds = false;
     }
+
     static init(){
-        return new UIView();
+        // Returns the instance of this class
+        //   this will returns its subclass's instance
+        //   when called from the subclass
+        return new this();
     }
 
     static initWithFrame(frame){
@@ -66,15 +72,18 @@ class UIView extends NSObject {
         }
         animate();
     }
+
     description(){
         return "UIView";
     }
+
     addSubview(view){
         let self = this;
 
         view.superview = self;
         self.subviews.push(view);
     }
+
     bringSubviewToFront(view){
         let self = this;
 
@@ -85,6 +94,7 @@ class UIView extends NSObject {
 
         self.subviews.push(self.subviews.splice(index, 1)[0]);
     }
+
     sendSubviewToBack(view){
         let self = this;
 
@@ -95,6 +105,7 @@ class UIView extends NSObject {
 
         self.subviews.unshift(self.subviews.splice(index, 1)[0]);
     }
+
     insertSubviewAtIndex(view, index){
         let self = this;
 
@@ -105,6 +116,7 @@ class UIView extends NSObject {
         view.superview = self;
         self.subviews.splice(index, 0, view);
     }
+
     insertSubviewAboveSubview(view, siblingView){
         let self = this;
 
@@ -115,6 +127,7 @@ class UIView extends NSObject {
 
         self.insertSubviewAtIndex(view, index + 1);
     }
+
     insertSubviewBelowSubview(view, siblingView){
         let self = this;
 
@@ -125,6 +138,7 @@ class UIView extends NSObject {
 
         self.insertSubviewAtIndex(view, index);
     }
+
     exchangeSubviewAtIndexWithSubviewAtIndex(viewIndex, siblingViewIndex){
         let self = this;
         if(viewIndex < 0 || viewIndex >= self.subviews.length){
@@ -134,11 +148,13 @@ class UIView extends NSObject {
             return;
         }
 
-        // TODO(spywhere): Change this to destructure syntax when supports
+        // TODO[language](spywhere): Change this to destructure syntax
+        //   when supports
         let tempView = self.subviews[viewIndex];
         self.subviews[viewIndex] = self.subviews[siblingViewIndex];
         self.subviews[siblingViewIndex] = tempView;
     }
+
     removeFromSuperview(){
         let self = this;
 
@@ -151,6 +167,7 @@ class UIView extends NSObject {
         }
         self.superview = null;
     }
+
     _removeSubviews(){
         let self = this;
 
@@ -159,18 +176,23 @@ class UIView extends NSObject {
         }
         self.subviews = [];
     }
+
     isDescendantOfView(view){
         let self = this;
 
-        var superview = self.superview;
+        let superview = self.superview;
         while(superview !== view && superview !== null){
             superview = superview.superview;
         }
         return superview !== null;
     }
+
     layoutSubviews(){
         let self = this;
 
+        if(self._viewController !== null){
+            self._viewController.viewWillLayoutSubviews();
+        }
         if(self.frame === null){
             if(self.superview === null){
                 // If superview is null, this must be a root view
@@ -182,8 +204,8 @@ class UIView extends NSObject {
         }
 
         self._viewport = ScreenBuffer.create({
-            width: self.frame.size.width,
-            height: self.frame.size.height
+            width: self.frame.size.width + 1,
+            height: self.frame.size.height + 1
         });
 
         self._paint();
@@ -191,9 +213,13 @@ class UIView extends NSObject {
         for(let view of self.subviews){
             view.layoutSubviews();
         }
+        if(self._viewController !== null){
+            self._viewController.viewDidLayoutSubviews();
+        }
 
         self._didLayout = true;
     }
+
     layoutIfNeeded(){
         let self = this;
 
@@ -205,24 +231,67 @@ class UIView extends NSObject {
         }
         self.layoutSubviews();
     }
+
     get frame(){
         return this._frame;
     }
+
     set frame(value){
         let self = this;
         self.setFrame(value);
     }
+
     setFrame(frame){
         let self = this;
 
         self._frame = frame;
         self._didLayout = false;
     }
+
+    get bounds(){
+        let self = this;
+
+        return CGRectMake(
+            0, 0,
+            self.frame.size.width,
+            self.frame.size.height
+        );
+    }
+
+    set bounds(value){
+        let self = this;
+
+        self.frame = CGRectMake(
+            self.frame.origin.x + value.origin.x,
+            self.frame.origin.y + value.origin.y,
+            value.size.width,
+            value.size.height
+        );
+    }
+
+    get center(){
+        let self = this;
+
+        return CGPointMake(
+            self.frame.origin.x + self.frame.size.width / 2,
+            self.frame.origin.y + self.frame.size.height / 2
+        );
+    }
+
+    set center(value){
+        let self = this;
+
+        let frame = self.frame;
+        frame.origin.x = value.x - frame.size.width / 2;
+        frame.origin.y = value.y - frame.size.height / 2;
+        self.frame = frame;
+    }
+
     _paint(){
         let self = this;
 
-        for(let row = 0; row < self.frame.size.height; row++){
-            for(let col = 0; col < self.frame.size.width; col++){
+        for(let row = 0; row < self._viewport.height; row++){
+            for(let col = 0; col < self._viewport.width; col++){
                 self._viewport.put({
                     x: col,
                     y: row,
@@ -233,6 +302,7 @@ class UIView extends NSObject {
             }
         }
     }
+
     _render(terminal){
         let self = this;
 
@@ -240,7 +310,20 @@ class UIView extends NSObject {
 
         self._viewport.x = self.frame.origin.x;
         self._viewport.y = self.frame.origin.y;
-        if(self.superview === null){
+
+        let unclippedViews = [];
+        for(let view of self.subviews){
+            if(self.clipsToBounds){
+                view._render(terminal);
+            }else{
+                unclippedViews.push(view);
+            }
+        }
+        if(self.superview === null || !self.superview.clipsToBounds){
+            if(self.superview !== null){
+                self._viewport.x += self.superview.frame.origin.x;
+                self._viewport.y += self.superview.frame.origin.y;
+            }
             self._viewport.draw({
                 dst: terminal,
                 delta: true
@@ -252,8 +335,7 @@ class UIView extends NSObject {
                 delta: true
             });
         }
-
-        for(let view of self.subviews){
+        for(let view of unclippedViews){
             view._render(terminal);
         }
     }

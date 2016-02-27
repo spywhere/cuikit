@@ -11,9 +11,7 @@ class UILabel extends UIView {
     constructor(){
         super();
     }
-    static init(){
-        return new UILabel();
-    }
+
     description(){
         return "UILabel";
     }

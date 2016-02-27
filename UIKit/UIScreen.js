@@ -15,18 +15,25 @@ class UIScreen extends NSObject {
 
         self.bounds = CGRectZero;
     }
+
     static init(){
-        return new UIScreen();
+        // Returns the instance of this class
+        //   this will returns its subclass's instance
+        //   when called from the subclass
+        return new this();
     }
+
     static _initWithTerminal(terminal){
         let screen = UIScreen.init();
         screen.bounds = CGRectMake(0, 0, terminal.width + 1, terminal.height + 1);
         mainScreen = screen;
         return screen;
     }
+
     static mainScreen(){
         return mainScreen;
     }
+
     description(){
         return "UIScreen";
     }

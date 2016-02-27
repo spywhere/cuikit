@@ -8,6 +8,7 @@ let moduleExports = {};
     "./UILabel",
     "./UIScreen",
     "./UIView",
+    "./UIViewController",
     "./UIWindow"
 ].forEach(moduleName => {
     let module = require(moduleName);

@@ -29,30 +29,39 @@ class UIApplication extends NSObject {
         self.window = UIWindow.init();
         self._resetWindow();
     }
+
     _resetWindow(){
         let self = this;
 
         self.window.screen = UIScreen.mainScreen();
         self.window.frame = self.window.screen.bounds;
     }
+
     static init(){
-        sharedApplication = new UIApplication();
+        // Returns the instance of this class
+        //   this will returns its subclass's instance
+        //   when called from the subclass
+        sharedApplication = new this();
         return sharedApplication;
     }
+
     static initWithDelegate(delegate){
-        let app = UIApplication.init();
+        let app = this.init();
         app.delegate = delegate;
         return app.launch();
     }
+
     static sharedApplication(){
         return sharedApplication;
     }
+
     setDelegate(delegate){
         let self = this;
 
         self.delegate = delegate;
         return self;
     }
+
     _render(){
         let self = this;
 
@@ -66,6 +75,7 @@ class UIApplication extends NSObject {
             self._render();
         }, _Constant.secondPerFrame() * 1000);
     }
+
     launch(){
         let self = this;
 
